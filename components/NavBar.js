@@ -18,19 +18,19 @@ export function NavBar({ currentPage = "landing" }) {
     <header className="sticky top-0 z-40 w-full border-b border-navy/20 bg-navy">
       <nav className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex min-w-0 shrink items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <Link href="/" className="flex min-w-0 shrink items-center gap-1.5 pr-2 sm:gap-2 sm:pr-0" onClick={() => setMobileOpen(false)}>
             <Image
               src="/assets/logo.png"
               alt="Aegis Family Command Center"
               width={48}
               height={48}
-              className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+              className="h-8 w-8 shrink-0 object-contain max-[420px]:h-7 max-[420px]:w-7 sm:h-12 sm:w-12"
             />
             <div className="min-w-0 overflow-hidden">
-              <span className="block truncate font-serif text-xs font-semibold leading-tight text-white sm:text-lg">
+              <span className="block truncate font-serif text-[10px] font-semibold leading-tight text-white max-[420px]:text-[9px] sm:text-lg">
                 AEGIS FAMILY COMMAND CENTER
               </span>
-              <span className="block truncate text-[9px] uppercase tracking-wider text-gold sm:text-xs">
+              <span className="block truncate text-[9px] uppercase tracking-wider text-gold max-[420px]:hidden sm:text-xs">
                 OPTIMIZE. PROTECT. PRESERVE.
               </span>
             </div>
@@ -61,7 +61,7 @@ export function NavBar({ currentPage = "landing" }) {
           </div>
 
           {/* Mobile: right side = Member Login + hamburger */}
-          <div className="flex shrink-0 items-center gap-2 md:hidden">
+          <div className="flex shrink-0 items-center gap-1.5 pl-2 md:hidden min-[421px]:gap-2 min-[421px]:pl-0">
             <Link
               href="/login"
               className="rounded bg-gold px-3 py-2 text-xs font-semibold text-navy hover:bg-gold/90 transition-colors"
