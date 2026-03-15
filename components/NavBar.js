@@ -53,7 +53,7 @@ export function NavBar({ currentPage = "landing" }) {
               );
             })}
             <Link
-              href="/login"
+              href="/sign-in"
               className="rounded bg-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-gold/90 transition-colors"
             >
               MEMBER LOGIN
@@ -63,7 +63,7 @@ export function NavBar({ currentPage = "landing" }) {
           {/* Mobile: right side = Member Login + hamburger */}
           <div className="flex shrink-0 items-center gap-1.5 pl-2 md:hidden min-[421px]:gap-2 min-[421px]:pl-0">
             <Link
-              href="/login"
+              href="/sign-in"
               className="rounded bg-gold px-3 py-2 text-xs font-semibold text-navy hover:bg-gold/90 transition-colors"
             >
               LOGIN

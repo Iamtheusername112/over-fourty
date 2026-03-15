@@ -48,7 +48,7 @@ export function Footer() {
             <h3 className="mt-4 mb-2 text-xs font-semibold uppercase tracking-wider text-gold">
               Client Portal
             </h3>
-            <Link href="/login" className="text-sm text-white/90 hover:text-gold">
+            <Link href="/sign-in" className="text-sm text-white/90 hover:text-gold">
               Member Login
             </Link>
           </div>

@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { BarChart3, Shield, FileCheck } from "lucide-react";
 
 export default async function OptimizerDashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
-  const { data: profile } = user && supabase
-    ? await supabase.from("profiles").select("parent_id").eq("id", user.id).single()
+  const { userId } = await auth();
+  const supabase = createAdminClient();
+  const { data: profile } = userId && supabase
+    ? await supabase.from("profiles").select("id, parent_id").eq("clerk_user_id", userId).single()
     : { data: null };
 
   return (

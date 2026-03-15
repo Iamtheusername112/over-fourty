@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/browser";
 import { completeOnboarding, getProfile } from "@/app/actions/profile";
 import { User, Users } from "lucide-react";
 
@@ -18,7 +17,7 @@ export default function OnboardingPage() {
     (async () => {
       const { profile, hasUser } = await getProfile();
       if (!hasUser) {
-        router.replace("/login");
+        router.replace("/sign-in");
         return;
       }
       if (profile?.onboarding_complete) {
@@ -32,13 +31,18 @@ export default function OnboardingPage() {
   async function handleRoleSelect(role) {
     setSubmitting(true);
     setError("");
-    const result = await completeOnboarding(role);
-    setSubmitting(false);
-    if (!result.ok) {
-      setError(result.error || "Something went wrong.");
-      return;
+    try {
+      const result = await completeOnboarding(role);
+      setSubmitting(false);
+      if (!result?.ok) {
+        setError(result?.error || "Something went wrong.");
+        return;
+      }
+      router.replace(role === "ELDER" ? "/dashboard/elder" : "/dashboard/optimizer");
+    } catch (err) {
+      setSubmitting(false);
+      setError(err?.message?.includes("fetch") ? "Request failed. Check that SUPABASE_SERVICE_ROLE_KEY is set and clerk-migration.sql was run in Supabase." : (err?.message || "Something went wrong."));
     }
-    router.replace(role === "ELDER" ? "/dashboard/elder" : "/dashboard/optimizer");
   }
 
   if (loading) {

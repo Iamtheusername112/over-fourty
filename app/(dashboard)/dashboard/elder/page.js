@@ -1,14 +1,18 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { ElderActions, FamilyMessages } from "./elder-client";
 
 export default async function ElderDashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = (await supabase?.auth.getUser()) ?? { data: { user: null } };
+  const { userId } = await auth();
+  const supabase = createAdminClient();
   let messages = [];
-  if (supabase && user) {
-    const { data } = await supabase.from("family_messages").select("id, body, created_at").eq("elder_id", user.id).order("created_at", { ascending: false }).limit(10);
-    messages = data ?? [];
+  if (userId && supabase) {
+    const { data: profile } = await supabase.from("profiles").select("id").eq("clerk_user_id", userId).single();
+    if (profile) {
+      const { data } = await supabase.from("family_messages").select("id, body, created_at").eq("elder_id", profile.id).order("created_at", { ascending: false }).limit(10);
+      messages = data ?? [];
+    }
   }
 
   return (
