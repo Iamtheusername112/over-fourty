@@ -1,20 +1,9 @@
-import { Suspense } from "react";
 import OnboardingStartContent from "./OnboardingStartContent";
 
 export const dynamic = "force-dynamic";
 
-function Fallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-navy">
-      <p className="text-white/80">Loading…</p>
-    </div>
-  );
-}
-
-export default function OnboardingStartPage() {
-  return (
-    <Suspense fallback={<Fallback />}>
-      <OnboardingStartContent />
-    </Suspense>
-  );
+export default async function OnboardingStartPage({ searchParams }) {
+  const resolved = await searchParams;
+  const isPaymentSuccess = resolved?.payment === "success";
+  return <OnboardingStartContent isPaymentSuccess={isPaymentSuccess} />;
 }

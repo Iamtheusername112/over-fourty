@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
 function Confetti() {
@@ -34,11 +33,9 @@ function Confetti() {
   );
 }
 
-export default function OnboardingStartContent() {
+export default function OnboardingStartContent({ isPaymentSuccess = false }) {
   const [showContent, setShowContent] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const searchParams = useSearchParams();
-  const isPaymentSuccess = searchParams.get("payment") === "success";
 
   useEffect(() => {
     setHasMounted(true);
