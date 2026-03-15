@@ -36,6 +36,15 @@ export async function middleware(request) {
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
 
+  if (pathname === "/login" && user) {
+    const { data: profile } = await supabase.from("profiles").select("role, onboarding_complete").eq("id", user.id).single();
+    if (profile?.onboarding_complete) {
+      const dashboardPath = profile.role === "ELDER" ? "/dashboard/elder" : "/dashboard/optimizer";
+      return NextResponse.redirect(new URL(dashboardPath, request.url));
+    }
+    return NextResponse.redirect(new URL("/onboarding", request.url));
+  }
+
   if (pathname === "/onboarding" && !user) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -58,5 +67,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/dashboard/optimizer", "/dashboard/elder", "/onboarding"],
+  matcher: ["/dashboard", "/dashboard/optimizer", "/dashboard/elder", "/onboarding", "/login"],
 };

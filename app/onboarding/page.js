@@ -16,18 +16,14 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     (async () => {
-      const profile = await getProfile();
+      const { profile, hasUser } = await getProfile();
+      if (!hasUser) {
+        router.replace("/login");
+        return;
+      }
       if (profile?.onboarding_complete) {
         router.replace(profile.role === "ELDER" ? "/dashboard/elder" : "/dashboard/optimizer");
         return;
-      }
-      const supabase = createClient();
-      if (supabase) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          router.replace("/login");
-          return;
-        }
       }
       setLoading(false);
     })();

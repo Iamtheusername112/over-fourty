@@ -3,13 +3,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
+/** Returns { profile, hasUser }. Use hasUser so onboarding can tell "logged in but no profile" from "not logged in". */
 export async function getProfile() {
   const supabase = await createClient();
-  if (!supabase) return null;
+  if (!supabase) return { profile: null, hasUser: false };
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) return { profile: null, hasUser: false };
   const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  return data;
+  return { profile: data ?? null, hasUser: true };
 }
 
 export async function completeOnboarding(role) {
