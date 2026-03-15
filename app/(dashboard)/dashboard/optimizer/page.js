@@ -5,12 +5,12 @@ import {
   BarChart3,
   Heart,
   Brain,
-  FileCheck,
   Check,
   CircleAlert,
 } from "lucide-react";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
 import { ParentalGuardianCard } from "./ParentalGuardianCard";
+import WealthAcceleratorWrapper from "./WealthAcceleratorWrapper";
 
 export default async function OptimizerDashboardPage() {
   const { userId } = await auth();
@@ -88,11 +88,35 @@ export default async function OptimizerDashboardPage() {
           </SubscriptionGate>
         </section>
 
+        {/* The Wealth Accelerator */}
+        <SubscriptionGate subscriptionTier={subscriptionTier} subscriptionStatus={subscriptionStatus}>
+          <WealthAcceleratorWrapper />
+        </SubscriptionGate>
+
         {/* Module B: Parental Guardian */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-navy mb-6">Parental Guardian</h2>
           <SubscriptionGate subscriptionTier={subscriptionTier} subscriptionStatus={subscriptionStatus}>
             <ParentalGuardianCard elderStatus={elderStatus} latestStory={latestStory} hasLinkedElder={!!profile?.parent_id} />
+          </SubscriptionGate>
+        </section>
+
+        {/* KYC — Access funds & loans */}
+        <section className="mb-10">
+          <h2 className="font-serif text-2xl font-bold text-navy mb-6">Access funds & loans</h2>
+          <SubscriptionGate subscriptionTier={subscriptionTier} subscriptionStatus={subscriptionStatus}>
+            <Link
+              href="/dashboard/optimizer/kyc"
+              className="block rounded-xl border-2 border-gold bg-gold/10 p-6 shadow-md transition hover:bg-gold/20 hover:border-gold"
+            >
+              <p className="font-serif text-lg font-semibold text-navy">Get very easy with our help</p>
+              <p className="mt-2 text-sm text-navy/80">
+                Complete verification so we can connect you with government programs and major financial institutions for loans and funds.
+              </p>
+              <span className="mt-4 inline-block rounded border-2 border-gold bg-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-gold/90 transition">
+                Start KYC →
+              </span>
+            </Link>
           </SubscriptionGate>
         </section>
 
