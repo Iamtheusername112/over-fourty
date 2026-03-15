@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { DashboardSignOut } from "@/components/DashboardSignOut";
 import { ElderActions, FamilyMessages, AudioGallery, FamilyConnection, BenefitsCTA, PeaceOfMind } from "./elder-client";
 
 export default async function ElderDashboardPage() {
@@ -34,17 +35,20 @@ export default async function ElderDashboardPage() {
   return (
     <div className="min-h-screen bg-navy">
       <header className="border-b border-white/10 px-4 py-4">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <h1 className="font-serif font-bold text-white" style={{ fontSize: "24px" }}>
             My Dashboard
           </h1>
-          <Link
-            href="/"
-            className="rounded-lg border-2 border-gold bg-transparent px-5 py-3 font-semibold text-gold hover:bg-gold/10"
-            style={{ minHeight: "48px", fontSize: "22px" }}
-          >
-            Home
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="rounded-lg border-2 border-gold bg-transparent px-5 py-3 font-semibold text-gold hover:bg-gold/10"
+              style={{ minHeight: "48px", fontSize: "22px" }}
+            >
+              Home
+            </Link>
+            <DashboardSignOut variant="elder" />
+          </div>
         </div>
       </header>
 

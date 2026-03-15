@@ -27,4 +27,7 @@ CREATE TABLE IF NOT EXISTS legacy_stories (
 ALTER TABLE legacy_stories ENABLE ROW LEVEL SECURITY;
 
 -- 3. Create storage bucket in Supabase Dashboard: Storage → New bucket → name: legacy-audio (private).
--- Your app uploads via service_role so no RLS policy needed for server-side uploads.
+--    Your app uploads via service_role so no RLS policy needed for server-side uploads.
+--    IMPORTANT: In Storage → legacy-audio → Configuration (or Policies), set allowed MIME types to include:
+--      audio/webm
+--    (or allow "audio/*" so browser recordings in webm/opus work). Otherwise uploads will fail with "MIME type audio/webm is not supported".

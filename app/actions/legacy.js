@@ -20,14 +20,25 @@ export async function createLegacyStory(formData) {
   const title = (formData.get("title") || "My Story").toString().trim().slice(0, 200);
   if (!file || !(file instanceof Blob)) return { ok: false, error: "No audio file." };
 
-  const ext = "webm";
+  // Client sends MP3 (audio/mpeg) when bucket only allows that; otherwise we could accept webm.
+  const rawType = (file.type || "").toLowerCase();
+  const fileName = file.name || "";
+  const isMp3 = rawType === "audio/mpeg" || rawType === "audio/mp3" || fileName.toLowerCase().endsWith(".mp3");
+  const ext = isMp3 ? "mp3" : "webm";
+  const contentType = isMp3 ? "audio/mpeg" : (rawType.startsWith("audio/webm") ? rawType : "audio/webm");
   const path = `${profile.id}/${randomUUID()}.${ext}`;
 
   const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file, {
-    contentType: "audio/webm",
+    contentType,
     upsert: false,
   });
-  if (uploadError) return { ok: false, error: uploadError.message };
+  if (uploadError) {
+    const msg = uploadError.message || "";
+    if (/mime|content.type|not supported/i.test(msg)) {
+      return { ok: false, error: "Storage does not allow this audio format. Ask your administrator to add “audio/webm” to the legacy-audio bucket’s allowed MIME types in Supabase (Storage → legacy-audio → Configuration)." };
+    }
+    return { ok: false, error: uploadError.message };
+  }
 
   const { data: row, error: insertError } = await supabase
     .from("legacy_stories")

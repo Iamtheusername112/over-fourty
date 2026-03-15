@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Mic, ThumbsUp, Loader2, AlertCircle, Heart, FileText, Users } from "lucide-react";
 import { elderCheckIn } from "@/app/actions/profile";
 import { createLegacyStory, getLegacyStoryPlaybackUrl } from "@/app/actions/legacy";
+import { webmBlobToMp3 } from "@/lib/audio/webmToMp3";
 import { createElderHelpAlert } from "@/app/actions/elder";
 import { getElderPreferences, saveElderPreferences } from "@/app/actions/elder";
 
@@ -33,19 +34,25 @@ export function ElderActions() {
       mr.ondataavailable = (e) => e.data.size && chunksRef.current.push(e.data);
       mr.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const webmBlob = new Blob(chunksRef.current, { type: "audio/webm" });
         setUploading(true);
-        const form = new FormData();
-        form.append("audio", blob);
-        form.append("title", "My Story");
-        const result = await createLegacyStory(form);
-        setUploading(false);
-        setRecording(false);
-        if (result?.ok) {
-          setRecordError("");
-          router.refresh();
-        } else {
-          setRecordError(result?.error || "Upload failed.");
+        setRecordError("");
+        try {
+          const mp3Blob = await webmBlobToMp3(webmBlob);
+          const form = new FormData();
+          form.append("audio", mp3Blob, "recording.mp3");
+          form.append("title", "My Story");
+          const result = await createLegacyStory(form);
+          if (result?.ok) {
+            router.refresh();
+          } else {
+            setRecordError(result?.error || "Upload failed.");
+          }
+        } catch (err) {
+          setRecordError(err?.message || "Could not process or upload recording.");
+        } finally {
+          setUploading(false);
+          setRecording(false);
         }
       };
       mr.start();

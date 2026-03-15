@@ -9,6 +9,7 @@ import {
   CircleAlert,
 } from "lucide-react";
 import { SubscriptionGate } from "@/components/SubscriptionGate";
+import { DashboardSignOut } from "@/components/DashboardSignOut";
 import { ParentalGuardianCard } from "./ParentalGuardianCard";
 import WealthAcceleratorWrapper from "./WealthAcceleratorWrapper";
 
@@ -36,14 +37,17 @@ export default async function OptimizerDashboardPage() {
   return (
     <div className="min-h-screen bg-bg-off-white">
       <header className="border-b border-navy/10 bg-navy px-4 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <h1 className="font-serif text-xl font-bold text-white">Command Center</h1>
-          <Link
-            href="/"
-            className="rounded border border-gold bg-transparent px-4 py-2 text-sm font-medium text-gold hover:bg-gold/10"
-          >
-            Home
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="rounded border border-gold bg-transparent px-4 py-2 text-sm font-medium text-gold hover:bg-gold/10"
+            >
+              Home
+            </Link>
+            <DashboardSignOut variant="optimizer" />
+          </div>
         </div>
       </header>
 
