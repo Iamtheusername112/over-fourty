@@ -26,11 +26,11 @@ export function NavBar({ currentPage = "landing" }) {
               height={48}
               className="h-10 w-10 object-contain sm:h-12 sm:w-12"
             />
-            <div className="hidden sm:block">
-              <span className="block font-serif text-lg font-semibold leading-tight text-white">
+            <div className="min-w-0">
+              <span className="block font-serif text-sm font-semibold leading-tight text-white sm:text-lg">
                 AEGIS FAMILY COMMAND CENTER
               </span>
-              <span className="block text-xs uppercase tracking-wider text-gold">
+              <span className="block text-[10px] uppercase tracking-wider text-gold sm:text-xs">
                 OPTIMIZE. PROTECT. PRESERVE.
               </span>
             </div>
