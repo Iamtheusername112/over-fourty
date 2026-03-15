@@ -2,9 +2,12 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, ThumbsUp, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Mic, ThumbsUp, Loader2, AlertCircle, Heart, FileText, Users } from "lucide-react";
 import { elderCheckIn } from "@/app/actions/profile";
 import { createLegacyStory, getLegacyStoryPlaybackUrl } from "@/app/actions/legacy";
+import { createElderHelpAlert } from "@/app/actions/elder";
+import { getElderPreferences, saveElderPreferences } from "@/app/actions/elder";
 
 export function ElderActions() {
   const router = useRouter();
@@ -100,6 +103,167 @@ export function ElderActions() {
           </p>
         )}
       </div>
+
+      {/* I need help */}
+      <div className="rounded-xl border-2 border-white/20 bg-white/5 p-6">
+        <h2 className="font-serif font-bold text-white mb-4" style={{ fontSize: "22px" }}>
+          Need help?
+        </h2>
+        <p className="text-white/90 mb-4" style={{ fontSize: "20px" }}>
+          Tap below and your family will be notified right away.
+        </p>
+        <NeedHelpButton />
+      </div>
+    </div>
+  );
+}
+
+function NeedHelpButton() {
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleClick() {
+    setLoading(true);
+    setStatus("");
+    const result = await createElderHelpAlert("I need help");
+    setLoading(false);
+    setStatus(result?.ok ? "Help requested. Your family has been notified." : (result?.error || "Please try again."));
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={loading}
+        className="w-full rounded-xl border-2 border-amber-400 bg-amber-500 py-4 font-semibold text-navy hover:bg-amber-400 disabled:opacity-70"
+        style={{ fontSize: "22px", minHeight: "56px" }}
+      >
+        <span className="flex items-center justify-center gap-2">
+          {loading ? <Loader2 className="h-7 w-7 animate-spin" aria-hidden /> : <AlertCircle className="h-7 w-7" aria-hidden />}
+          I NEED HELP
+        </span>
+      </button>
+      {status && (
+        <p className={`mt-3 ${status.includes("notified") ? "text-gold" : "text-red-300"}`} style={{ fontSize: "20px" }}>
+          {status}
+        </p>
+      )}
+    </>
+  );
+}
+
+export function FamilyConnection({ linkedCount = 0 }) {
+  return (
+    <div className="rounded-xl border-2 border-gold/30 bg-white/5 p-6">
+      <h2 className="font-serif font-bold text-white mb-4 flex items-center gap-2" style={{ fontSize: "22px" }}>
+        <Users className="h-7 w-7 text-gold" aria-hidden />
+        Your family
+      </h2>
+      {linkedCount > 0 ? (
+        <p className="text-white" style={{ fontSize: "22px" }}>
+          Your family member is connected. They can see when you check in and listen to your recordings.
+        </p>
+      ) : (
+        <p className="text-white/90" style={{ fontSize: "22px" }}>
+          Ask your family to connect with you using their invite code from their dashboard. Once they add you, you’ll see it here.
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function BenefitsCTA() {
+  return (
+    <Link
+      href="/dashboard/elder/benefits"
+      className="block rounded-xl border-2 border-gold bg-gold/10 p-6 transition hover:bg-gold/20 hover:border-gold"
+    >
+      <h2 className="font-serif font-bold text-white mb-2 flex items-center gap-2" style={{ fontSize: "22px" }}>
+        <Heart className="h-7 w-7 text-gold" aria-hidden />
+        Get benefits with our help
+      </h2>
+      <p className="text-white/90" style={{ fontSize: "20px" }}>
+        Connect to government and community programs: Medicare, Social Security, housing, and prescriptions.
+      </p>
+      <span className="mt-4 inline-block rounded-lg border-2 border-gold bg-gold px-5 py-2 font-semibold text-navy hover:bg-gold/90" style={{ fontSize: "20px" }}>
+        See programs →
+      </span>
+    </Link>
+  );
+}
+
+export function PeaceOfMind({ initialPreferences = null }) {
+  const [prefs, setPrefs] = useState(() => ({
+    emergency_contact_name: initialPreferences?.emergency_contact_name ?? "",
+    emergency_contact_phone: initialPreferences?.emergency_contact_phone ?? "",
+    important_papers_note: initialPreferences?.important_papers_note ?? "",
+  }));
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function handleSave(e) {
+    e.preventDefault();
+    setSaving(true);
+    setMessage("");
+    const result = await saveElderPreferences(prefs);
+    setSaving(false);
+    setMessage(result?.ok ? "Saved." : (result?.error || "Could not save."));
+  }
+
+  return (
+    <div className="rounded-xl border-2 border-white/20 bg-white/5 p-6">
+      <h2 className="font-serif font-bold text-white mb-4 flex items-center gap-2" style={{ fontSize: "22px" }}>
+        <FileText className="h-7 w-7 text-gold" aria-hidden />
+        Peace of mind
+      </h2>
+      <p className="text-white/90 mb-4" style={{ fontSize: "20px" }}>
+        Optional: who to call in an emergency, and where you keep important papers.
+      </p>
+      <form onSubmit={handleSave} className="space-y-4">
+        <div>
+          <label className="block text-white/80 mb-1" style={{ fontSize: "20px" }}>Emergency contact name</label>
+          <input
+            type="text"
+            value={prefs.emergency_contact_name || ""}
+            onChange={(e) => setPrefs((p) => ({ ...p, emergency_contact_name: e.target.value }))}
+            className="w-full rounded-lg border-2 border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/50 focus:border-gold focus:outline-none"
+            style={{ fontSize: "20px" }}
+            placeholder="Name"
+          />
+        </div>
+        <div>
+          <label className="block text-white/80 mb-1" style={{ fontSize: "20px" }}>Emergency contact phone</label>
+          <input
+            type="tel"
+            value={prefs.emergency_contact_phone || ""}
+            onChange={(e) => setPrefs((p) => ({ ...p, emergency_contact_phone: e.target.value }))}
+            className="w-full rounded-lg border-2 border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/50 focus:border-gold focus:outline-none"
+            style={{ fontSize: "20px" }}
+            placeholder="Phone"
+          />
+        </div>
+        <div>
+          <label className="block text-white/80 mb-1" style={{ fontSize: "20px" }}>Where are my important papers?</label>
+          <textarea
+            value={prefs.important_papers_note || ""}
+            onChange={(e) => setPrefs((p) => ({ ...p, important_papers_note: e.target.value }))}
+            className="w-full rounded-lg border-2 border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/50 focus:border-gold focus:outline-none resize-y min-h-[80px]"
+            style={{ fontSize: "20px" }}
+            placeholder="e.g. In the safe, with my lawyer"
+            rows={3}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-xl border-2 border-gold bg-gold py-3 px-6 font-semibold text-navy hover:bg-gold/90 disabled:opacity-70"
+          style={{ fontSize: "22px" }}
+        >
+          {saving ? "Saving…" : "Save"}
+        </button>
+      </form>
+      {message && <p className="mt-3 text-gold" style={{ fontSize: "20px" }}>{message}</p>}
     </div>
   );
 }
