@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import OnboardingStartContent from "./OnboardingStartContent";
 
+export const dynamic = "force-dynamic";
+
 function Fallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-navy">
