@@ -24,6 +24,10 @@ export default function OnboardingPage() {
         router.replace(profile.role === "ELDER" ? "/dashboard/elder" : "/dashboard/optimizer");
         return;
       }
+      if (profile?.subscription_status === "active" && profile?.onboarding_step) {
+        router.replace("/onboarding/setup");
+        return;
+      }
       setLoading(false);
     })();
   }, [router]);

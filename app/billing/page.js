@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { User, Users, UserCircle, Check, Lock, RefreshCw, Shield } from "lucide-react";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import Link from "next/link";
+import { BillingCTA } from "@/components/BillingCTA";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 24 },
@@ -137,12 +137,12 @@ export default function BillingPage() {
                         </li>
                       ))}
                     </ul>
-                    <Link
+                    <BillingCTA
+                      tier={tier.name}
+                      cta={tier.cta}
+                      ctaStyle={tier.ctaStyle}
                       href="#"
-                      className={`mt-8 block rounded py-3 text-center font-semibold uppercase tracking-wide transition ${tier.ctaStyle}`}
-                    >
-                      {tier.cta}
-                    </Link>
+                    />
                   </motion.div>
                 );
               })}

@@ -22,3 +22,21 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+@keyframes shimmer-gold {
+  0%, 100% { background-position: 200% 50%; }
+  50% { background-position: -200% 50%; }
+}
+
+.animate-shimmer-gold {
+  background: linear-gradient(105deg, transparent 0%, rgba(168, 145, 96, 0.2) 25%, transparent 50%, rgba(168, 145, 96, 0.15) 75%, transparent 100%);
+  background-size: 200% 200%;
+  animation: shimmer-gold 4s ease-in-out infinite;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
