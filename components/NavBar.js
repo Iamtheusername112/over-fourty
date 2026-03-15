@@ -30,8 +30,8 @@ export function NavBar({ currentPage = "landing" }) {
               <span className="block truncate font-serif text-[10px] font-semibold leading-tight text-white max-[420px]:text-[9px] sm:text-lg">
                 AEGIS FAMILY COMMAND CENTER
               </span>
-              <span className="block truncate text-[9px] uppercase tracking-wider text-gold max-[420px]:hidden sm:text-xs">
-                OPTIMIZE. PROTECT. PRESERVE.
+              <span className="block truncate text-[9px] uppercase tracking-wider text-gold sm:text-xs">
+                PROTECT. PRESERVE.
               </span>
             </div>
           </Link>
