@@ -1,7 +1,7 @@
-"use client";
-
 import { Suspense } from "react";
 import OnboardingStartContent from "./OnboardingStartContent";
+
+export const dynamic = "force-dynamic";
 
 function LoadingFallback() {
   return (
