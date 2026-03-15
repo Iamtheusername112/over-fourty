@@ -7,11 +7,15 @@ const isProtectedRoute = createRouteMatcher([
   "/onboarding/setup",
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
+const clerkHandler = clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
   }
 });
+
+export default function proxy(request) {
+  return clerkHandler(request);
+}
 
 export const config = {
   matcher: [
